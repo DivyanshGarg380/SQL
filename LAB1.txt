@@ -1,0 +1,34 @@
+/* LAB1 */
+
+CREATE TABLE employee (
+    emp_no INT,
+    emp_name VARCHAR(50),
+    emp_address VARCHAR(100)
+);
+
+INSERT INTO employee (emp_no, emp_name, emp_address) VALUES (1, 'Divyansh', 'Hyderabad');
+INSERT INTO employee (emp_no, emp_name, emp_address) VALUES (2, 'Saksham', 'Manipal');
+INSERT INTO employee (emp_no, emp_name, emp_address) VALUES (3, 'Vidhan', 'Delhi');
+INSERT INTO employee (emp_no, emp_name, emp_address) VALUES (4, 'Aayush', 'Manipal');
+INSERT INTO employee (emp_no, emp_name, emp_address) VALUES (5, 'Upkirat', 'Hyderabad');
+
+SELECT emp_name from employee;
+
+SELECT * FROM employee WHERE emp_address = 'Manipal';
+
+ALTER TABLE employee
+ADD salary INT NOT NULL DEFAULT 30000;
+
+UPDATE employee SET salary = 50000 WHERE emp_no = 1;
+UPDATE employee SET salary = 30555 WHERE emp_no = 2;
+UPDATE employee SET salary = 23333 WHERE emp_no = 3;
+UPDATE employee SET salary = 70222 WHERE emp_no = 4;
+UPDATE employee SET salary = 45567 WHERE emp_no = 5;
+
+DESC employee;
+
+DELETE FROM employee WHERE emp_address = 'Mangalore';
+
+RENAME employee TO employee1;
+
+DROP TABLE employee1;
