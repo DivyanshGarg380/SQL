@@ -1,0 +1,46 @@
+/* LAB2 */
+
+CREATE TABLE Department(
+   DeptNo INT PRIMARY KEY,
+   DeptName VARCHAR(50) UNIQUE,
+   Location VARCHAR2(50)
+);
+
+CREATE TABLE Employee(
+   EmpNo INT PRIMARY KEY,
+   EmpName VARCHAR(50) NOT NULL,
+   Gender VARCHAR(10) CHECK (Gender = 'M' OR Gender = 'F') NOT NULL,
+   Salary INT NOT NULL,
+   Address VARCHAR(100) NOT NULL,
+   DNo INT NOT NULL,
+   CONSTRAINT FK_DEPT FOREIGN KEY (DNo) REFERENCES Department(DeptNo)
+);
+
+INSERT INTO Department VALUES (101, 'Software Development', 'World');
+INSERT INTO Department VALUES (102, 'Machine Learning', 'London');
+INSERT INTO Department VALUES (103, 'Medical', 'London');
+
+INSERT INTO Employee VALUES (1, 'Divyansh', 'M', 200000, 'Hyderabad', 101);
+INSERT INTO Employee VALUES (2, 'Saksham', 'M', 180000, 'Delhi', 102);
+INSERT INTO Employee VALUES (3, 'Zeliha', 'F', 300000, 'London', 103);
+
+INSERT INTO Employee VALUES (1, 'RAHUL', 'M', 25000, 'Shimla', 101);
+INSERT INTO Employee VALUES (4,  NULL, 'M', 22000, 'Shimla', 101);
+INSERT INTO Employee VALUES (5, 'Homie', 'X', 27000, 'Pune', 102);
+INSERT INTO Employee VALUES (6, 'Ravi', 'M', 30000, 'Jaipur', 999);
+
+DELETE FROM Department WHERE DeptNo = 101;
+
+ALTER TABLE Employee DROP CONSTRAINT FK_DEPT;
+
+ALTER TABLE Employee ADD CONSTRAINT FK_DEPT
+FOREIGN KEY (Dno) REFERENCES Department(DeptNo) ON DELETE CASCADE;
+
+DELETE FROM Department WHERE DeptNo = 101;
+
+ALTER TABLE Employee MODIFY Salary DEFAULT 10000;
+
+INSERT INTO Employee (EmpNo, EmpName, Gender, Address, DNo)
+VALUES (7, 'Meera', 'F', 'Kolkata', 102);
+
+SELECT EmpNo, Salary FROM Employee WHERE EmpNo = 7;
