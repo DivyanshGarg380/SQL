@@ -1,0 +1,117 @@
+/* LAB4 */
+
+SELECT course_id, COUNT(ID) AS student_count
+FROM takes
+GROUP BY course_id;
+
+SELECT dept_name, AVG(student_count) AS avg_students
+FROM (
+    SELECT c.dept_name, t.course_id, COUNT(t.ID) AS student_count
+    FROM takes t
+    JOIN course c ON t.course_id = c.course_id
+    GROUP BY c.dept_name, t.course_id
+)
+GROUP BY dept_name
+HAVING AVG(student_count) > 10;
+
+SELECT dept_name, COUNT(course_id) AS total_courses
+FROM course
+GROUP BY dept_name;
+
+SELECT dept_name, AVG(salary)
+FROM instructor 
+GROUP BY dept_name
+HAVING AVG(salary) > 42000;
+
+SELECT course_id, sec_id, COUNT(ID) AS enrollment
+FROM takes
+WHERE semester = 'Spring' AND year = 2009
+GROUP BY course_id, sec_id;
+
+SELECT course_id, prereq_id
+FROM prereq
+ORDER BY course_id ASC;
+
+SELECT ID, name, dept_name, salary
+FROM instructor
+ORDER BY salary DESC;
+
+
+SELECT MAX(total_salary) FROM (
+	SELECT dept_name, SUM(salary) AS total_salary
+	FROM instructor
+	GROUP BY dept_name
+);
+
+SELECT dept_name, avg_salary FROM (
+	SELECT dept_name, AVG(salary) AS avg_salary
+	FROM instructor
+	GROUP BY dept_name
+) WHERE avg_salary > 42000;
+
+
+SELECT course_id, sec_id, COUNT(ID) AS enrollment
+FROM takes
+WHERE semester = 'Spring' AND year = 2010
+GROUP BY course_id, sec_id
+HAVING COUNT(ID) = (
+	SELECT MAX(enroll_count)
+	FROM (
+		SELECT COUNT(ID) AS enroll_count
+		FROM takes
+		WHERE semester = 'Spring' AND year = 2010
+		GROUP BY course_id, sec_id
+	)
+);
+
+SELECT i.ID, i.name
+FROM instructor i
+WHERE NOT EXISTS (
+	SELECT s.ID
+	FROM student s
+	WHERE s.dept_name = 'Comp. Sci.'
+	AND NOT EXISTS (
+		SELECT * FROM teaches te
+		JOIN takes t ON te.course_id = t.course_id
+			AND te.sec_id = t.sec_id
+			AND te.semester = t.semester
+			AND te.year = t.year
+		WHERE te.ID = i.ID
+		AND t.ID = s.ID
+	)
+);
+
+SELECT dept_name FROM instructor 
+GROUP BY dept_name
+HAVING AVG(salary( > 50000
+AND COUNT(ID) > 5
+
+SELECT dept_name FROM department
+WHERE budget = (
+	SELECT MAX(budget)
+	FROM department
+);
+
+SELECT dept_name, SUM(salary) AS total_salary
+FROM instructor
+GROUP BY dept_name
+HAVING SUM(salary) > (
+	SELECT AVG(total_sal)
+	FROM (
+		SELECT SUM(salary) AS total_sal
+		FROM instructor
+		GROUP BY dept_name
+	)
+);
+
+UPDATE student SET dept_name = 'IT' where dept_name = 'Comp. Sci.';
+
+UPDATE instructor SET salary = salary * 1.03 WHERE salary > 100000;
+UPDATE instructor SET salary = salary * 1.05 WHERE salary <= 100000;
+
+SAVEPOINT before_raise;
+
+---- Place the salary updation part here-----
+
+ROLLBACK TO before_raise;
+COMMIT;
