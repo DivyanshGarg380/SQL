@@ -1,0 +1,59 @@
+/* LAB2 PART2 */
+
+SELECT name, dept_name FROM student;
+
+SELECT ID, name FROM instructor WHERE dept_name = 'Comp. Sci.';
+
+SELECT course_id, title FROM course WHERE dept_name = 'Comp. Sci.' AND credits = 3;
+
+SELECT course_id, title FROM course 
+WHERE course_id IN (
+  SELECT course_id FROM takes WHERE ID = '12345'
+);
+
+SELECT ID, name, salary FROM instructor WHERE salary BETWEEN 40000 and 90000;
+
+SELECT ID FROM instructor WHERE ID NOT IN (
+  SELECT ID FROM teaches;
+);
+
+SELECT s.name, c.title, sec.year
+FROM student s
+JOIN takes t ON s.ID = t.ID
+JOIN section sec ON t.course_id = sec.course_id 
+     AND t.sec_id = sec.sec_id
+     AND t.semester = sec.semester
+     AND t.year = sec.year
+JOIN course c ON sec.course_id = c.course_id
+WHERE sec.room_number = '303';
+
+
+SELECT s.name, t.course_id 
+FROM student s
+JOIN takes ON s.ID = t.ID
+WHERE t.year = 2015;
+
+SELECT name, salary 
+FROM instructor WHERE salary > ANY (
+    SELECT salary FROM instructor WHERE dept_name = 'Comp. Sci.'
+);
+
+SELECT name FROM instructor WHERE dept_name LIKE '%ch%';
+
+SELECT name, LENGTH(name) FROM student;
+
+SELECT dept_name, SUBSTR(dept_name, 3, 3) FROM department;
+
+SELECT UPPER(name) FROM instructor;
+
+SELECT name, NVL(salary, 0) FROM instructor;
+
+SELECT salary, ROUND(salary/3, -2) FROM instructor;
+
+SELECT TO_CHAR(DOB, 'DD-MON-YYYY') FROM Employee;
+SELECT TO_CHAR(DOB, 'DD-MON-YY') FROM Employee;
+SELECT TO_CHAR(DOB, 'DD-MM-YY') FROM Employee;
+
+SELECT name, TO_CHAR(DOB, 'YEAR') FROM Employee;
+SELECT name, TO_CHAR(DOB, 'year') FROM Employee;
+SELECT name, TO_CHAR(DOB, 'Year') FROM Employee;
