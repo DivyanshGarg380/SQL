@@ -1,0 +1,105 @@
+/* LAB3 */
+
+SELECT course_id FROM section WHERE semester = 'Fall' AND year = 2009
+UNION
+SELECT course_id FROM section WHERE semester = 'Spring' AND year = 2010;
+
+SELECT course_id FROM section WHERE semester = 'Fall' AND year = 2009
+INTERSECT
+SELECT course_id FROM section WHERE semester = 'Spring' AND year = 2010;
+
+SELECT course_id FROM section WHERE semester = 'Fall' AND year = 2009
+MINUS
+SELECT course_id FROM section WHERE semester = 'Spring' AND year = 2010;
+
+SELECT title from course c WHERE NOT EXISTS (
+  SELECT * FROM takes t WHERE t.course_id = c.course_id
+);
+
+SELECT DISTINCT course_id FROM section WHERE semester = 'Fall' AND year = 2009
+AND course_id IN (
+	SELECT course_id FROM section WHERE semester = 'Spring' AND year = 2010
+);
+
+SELECT name FROM student WHERE name IN (
+	SELECT name FROM instructor
+);
+
+SELECT name FROM instructor WHERE salary > ANY (
+	SELECT salary FROM instructor WHERE dept_name = 'Biology'
+);
+
+SELECT name FROM instructor WHERE salary > ALL (
+	SELECT salary FROM instructor WHERE dept_name = 'Biology'
+);
+
+SELECT dept_name FROM instructor
+GROUP BY dept_name 
+HAVING AVG(salary) = (
+	SELECT MAX(avg_sal) 
+	FROM (
+		SELECT AVG(salary) AS avg_sal
+		FROM INSTRUCTOR
+		GROUP BY dept_name
+	)
+);
+
+SELECT dept_name FROM department WHERE budget < (
+	SELECT AVG(salary) FROM instructor
+);
+
+SELECT DISTINCT s1.course_id
+FROM section s1
+WHERE semester = 'Fall' AND year = 2009
+AND EXISTS (
+	SELECT * FROM section s2 
+	WHERE s2.course_id = s1.course_id
+	AND s2.semester = 'Spring'
+	AND s2.year = 2010
+);
+
+SELECT s.ID, s.name 
+FROM student s
+WHERE NOT EXISTS (
+	SELECT c.course_id
+	FROM course c
+	WHERE c.dept_name = 'Biology'
+	AND NOT EXISTS (
+		SELECT * FROM takes t
+		WHERE t.ID = s.ID
+		AND t.course_id = c.course_id
+	)
+);
+
+SELECT course_id FROM section WHERE year = 2009
+GROUP BY course_id HAVING count(*) <= 1;
+
+SELECT t.ID
+from takes t
+JOIN course c ON t.course_id = c.course_id
+WHERE c.dept_name = 'Comp. Sci.'
+GROUP BY t.ID
+HAVING COUNT(DISTINCT t.course_id) >= 2
+
+SELECT dept_name, AVG(salary)
+FROM instructor 
+GROUP BY dept_name
+HAVING AVG(salary) > 42000;
+
+CREATE VIEW all_courses AS
+SELECT s.course_id, s.sec_id, s.building, s.room_number
+FROM section s
+JOIN course c ON s.course_id = c.course_id
+WHERE c.dept_name = 'Physics'
+AND s.semester = 'Fall'
+AND year = 2009;
+
+SELECT * FROM all_courses;
+
+CREATE VIEW department_total_salary AS
+SELECT dept_name, SUM(salary) AS total_salary
+FROM instructor
+GROUP BY dept_name;
+
+
+
