@@ -12,13 +12,31 @@ SELECT course_id FROM section WHERE semester = 'Fall' AND year = 2009
 MINUS
 SELECT course_id FROM section WHERE semester = 'Spring' AND year = 2010;
 
-SELECT title from course c WHERE NOT EXISTS (
-  SELECT * FROM takes t WHERE t.course_id = c.course_id
-);
+SELECT title
+FROM course
+WHERE course_id NOT IN (SELECT course_id FROM takes);
 
 SELECT DISTINCT course_id FROM section WHERE semester = 'Fall' AND year = 2009
 AND course_id IN (
 	SELECT course_id FROM section WHERE semester = 'Spring' AND year = 2010
+);
+
+SELECT COUNT(DISTINCT t.ID)
+FROM teaches te
+JOIN takes t
+  ON te.course_id = t.course_id
+ AND te.sec_id = t.sec_id
+ AND te.semester = t.semester
+ AND te.year = t.year
+WHERE te.ID = '10101';
+
+SELECT course_id
+FROM section
+WHERE semester = 'Fall' AND year = 2009
+AND course_id NOT IN (
+    SELECT course_id
+    FROM section
+    WHERE semester = 'Spring' AND year = 2010
 );
 
 SELECT name FROM student WHERE name IN (
@@ -33,15 +51,13 @@ SELECT name FROM instructor WHERE salary > ALL (
 	SELECT salary FROM instructor WHERE dept_name = 'Biology'
 );
 
-SELECT dept_name FROM instructor
-GROUP BY dept_name 
-HAVING AVG(salary) = (
-	SELECT MAX(avg_sal) 
-	FROM (
-		SELECT AVG(salary) AS avg_sal
-		FROM INSTRUCTOR
-		GROUP BY dept_name
-	)
+SELECT dept_name
+FROM instructor
+GROUP BY dept_name
+HAVING AVG(salary) >= ALL (
+    SELECT AVG(salary)
+    FROM instructor
+    GROUP BY dept_name
 );
 
 SELECT dept_name FROM department WHERE budget < (
@@ -100,6 +116,31 @@ CREATE VIEW department_total_salary AS
 SELECT dept_name, SUM(salary) AS total_salary
 FROM instructor
 GROUP BY dept_name;
+
+
+-----------------
+/* Additional Questions */
+
+SELECT DISTINCT dept_name
+FROM instructor;
+
+SELECT DISTINCT i.name, te.course_id
+FROM instructor i
+JOIN teaches te ON i.ID = te.ID;
+
+SELECT i.name, te.course_id
+FROM instructor i
+LEFT JOIN teaches te
+ON  i.ID = te.ID;
+
+SELECT s.name, s.dept_name, i.name, COUNT(t.course_id)
+FROM student s
+LEFT JOIN advisor a ON s.ID = a.s_ID
+LEFT JOIN instructor i ON a.i_ID = i.ID
+LEFT JOIN takes t ON s.ID = t.ID
+GROUP BY s.ID, s.name, s.dept_name, i.name;
+
+
 
 
 
