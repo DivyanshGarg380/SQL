@@ -83,7 +83,7 @@ WHERE NOT EXISTS (
 
 SELECT dept_name FROM instructor 
 GROUP BY dept_name
-HAVING AVG(salary( > 50000
+HAVING AVG(salary) > 50000
 AND COUNT(ID) > 5
 
 SELECT dept_name FROM department
